@@ -2,10 +2,9 @@
     background: #1E1E1E;
     padding: 32px 32px;
     width: 400px;
-    border-radius: 35px;
     height: 500px;
     display: grid;
-    grid-template-rows: 50px 1fr;
+    grid-template-rows: 25px 40px 1fr;
 }
 #json-editor .json-editor__header {
     color:#fff;
@@ -33,6 +32,20 @@
     min-width: 10px;
     width: 10px;
 }
+.json-editor__first-type-title-arrow {
+    color:#595e63;
+    width: 17px;
+    min-width: 17px;
+    transform: rotate(-90deg);
+    max-width: 17px;
+    font-size: 11px;
+    text-align: center;
+}
+.json-editor__first-type-title {
+    color: #595e63;
+    font-size: 14px;
+    font-weight: 700;
+}
 .json-editor__dropdown-arrow {
     font-size: 10px;
     padding: 5px;
@@ -55,6 +68,9 @@
 #json-editor .json-editor__json-editor-value tr {
     float: left;
     padding: 5px 5px;
+}
+.collapsed {
+    display: none;
 }
 .json-editor__field-key, .json-editor__field-value {
     outline: none;
