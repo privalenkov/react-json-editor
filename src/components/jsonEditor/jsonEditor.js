@@ -37,7 +37,7 @@ export default function JsonEditor({jsonFile, onSave, style}) {
             for (let key in data) {
                 const object = {
                     key,
-                    value: String(data[key]),
+                    value: (data[key] === null || type(data[key]) !== 'object') ? String(data[key]) : '',
                     type: type(data[key]),
                     paramsInside: insideCounter(data[key], type(data[key])),
                     parent: depthCurrentKey,
