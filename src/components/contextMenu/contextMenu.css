@@ -1,0 +1,20 @@
+.contextMenu {
+    position: fixed;
+    background: #ebedf0;
+    border-radius: 20px;
+    color: #1E1E1E;
+    overflow: hidden;
+}
+.contextMenu .contextMenu__option {
+    padding: 8px 20px;
+    min-width: 160px;
+    cursor: pointer;
+    font-size: 12px;
+}
+.contextMenu .contextMenu__option:hover {
+    background: #bcbcbe;
+    color: #fff;
+}
+.contextMenu .contextMenu__option:active {
+    background: #87878a;
+}

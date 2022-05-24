@@ -1,30 +1,60 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import ContextMenu from '../contextMenu/contextMenu';
 import './jsonEditor.css';
 
 export default function JsonEditor({jsonFile}) {
-    const data = jsonFile;
     const [editorTree, setEditorTree] = useState([]);
+    const ref = useRef();
+    
+    const data = jsonFile;
 
     const type = (value) => {
         const regex = /^\[object (\S+?)\]$/;
         const matches = Object.prototype.toString.call(value).match(regex) || [];
         return (matches[1] || 'undefined').toLowerCase();
-      }
+    }
 
-    const jsonIterator = (data, cb) => {
-        for (let i in data) {
-            cb.apply(this, [i, String(data[i]), type(data[i])]);  
-            if (data[i] !== null && typeof(data[i])=="object") {
-                jsonIterator(data[i], cb);
-            }
+    const insideCounter = (currentValue, type) => {
+        switch (type) {
+            case 'object':
+                return Object.keys(currentValue).length;;
+            case 'array':
+                return currentValue.length;
+            default:
+                return null;
         }
     }
 
-    useEffect(() => {
-        jsonIterator(data, (key, value, type) => {
-            setEditorTree(array => [...array, {key, value, type}]);
-        })
-    }, []);
+    const depthElCreator = (depth) => {
+        return Array.from({ length: depth }, (_, i) => {
+            return <td className='json-editor__depth' key={i}></td>;
+        });
+    }
+
+    const jsonIterator = (data, cb) => {
+        let depth = 0;
+        let depthCurrentKey = [];
+        (function iter (data, cb) {
+            for (let key in data) {
+                const object = {
+                    key,
+                    value: String(data[key]),
+                    type: type(data[key]),
+                    paramsInside: insideCounter(data[key], type(data[key])),
+                    parent: depthCurrentKey.length ? depthCurrentKey : [],
+                    depth,
+                };
+                cb.apply(this, [object]);  
+                if (data[key] !== null && typeof(data[key]) === 'object') {
+                    depthCurrentKey = [key, type(data[key])];
+                    depth++;
+                    iter(data[key], cb);
+                }
+            }
+            depthCurrentKey = [];
+            depth--;
+        })(data, cb)
+    }
 
     const getClassByType = (type) => {
         switch (type) {
@@ -44,33 +74,50 @@ export default function JsonEditor({jsonFile}) {
         }
     }
 
+    useEffect(() => {
+        jsonIterator(data, (obj) => {
+            setEditorTree(array => [...array, obj]);
+        })
+    }, []);
+
+    const onClickDropdownHandler = (e) => {
+        console.log(e)
+    }
+
     return (
-        <div id="json-editor">
-            <header className='json-editor__header'>React-json-editor</header>
-            <div className="json-editor__json-editor-tree">
-                <table>
-                    <tbody>
-                        {editorTree && editorTree.map((obj, index) => {
-                            console.log(obj.type, obj.value)
-                           return <tr className={getClassByType(obj.type)}>
-                                <td className='json-editor__line-num'>{index}</td>
-                                <td className='json-editor__dropdown-arrow'>{(obj.type === 'object' || obj.type === 'array') && '▼'}</td>
-                                <td>
-                                    <table key={index} className='json-editor__json-editor-value'>
-                                        <tbody>
-                                            <tr>
-                                                <td><div contentEditable="true" className='json-editor__field-key'>{obj.key}</div></td>
-                                                <td className='json-editor__separator'>:</td>
-                                                <td><div contentEditable="true" className={`json-editor__field-value ${getClassByType(obj.type)}`}>{obj.value}</div></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                        })}
-                    </tbody>
-                </table>
+        <>
+            <ContextMenu elRef={ref} options={[{text: 'True'}, {text: 'False'}]}/>
+            <div id="json-editor" ref={ref}>
+                <header className='json-editor__header'>React-json-editor</header>
+                <div className="json-editor__json-editor-tree">
+                    <table>
+                        <tbody>
+                            {editorTree && editorTree.map((obj, index) => {
+                            return <tr key={index} className={getClassByType(obj.type)}>
+                                    <td className='json-editor__line-num'>{index + 1}</td>
+                                    <td onClick={onClickDropdownHandler} className='json-editor__dropdown-arrow'>{obj.paramsInside && '▼'}</td>
+                                    <td>
+                                        <table className='json-editor__json-editor-value'>
+                                            <tbody>
+                                                <tr>
+                                                    {depthElCreator(obj.depth)}
+                                                    <td><div className={`json-editor__field-key ${obj.parent[1] === 'array' && 'json-editor__field-key--array'}`}>{obj.key}</div></td>
+                                                    <td className='json-editor__separator'>{!obj.paramsInside && ':'}</td>
+                                                    {
+                                                        (obj.type === 'object' || obj.type === 'array')
+                                                            ? <td><span className='json-editor__field-params-count-separator'>{ obj.type === 'object' ? '{' : '['}</span><span className='json-editor__field-params-count'>{obj.paramsInside}</span><span className='json-editor__field-params-count-separator'>{ obj.type === 'object' ? '}' : ']'}</span></td>
+                                                            : <td><div className={`json-editor__field-value ${getClassByType(obj.type)}`}>{obj.value}</div></td>
+                                                    }
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            })}
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
+        </>
     );
 };

@@ -15,9 +15,9 @@
 #json-editor .json-editor__json-editor-tree {
     width: 100%;
     height: 100%;
-    overflow-y: scroll;
-    color:#9CDCFE;
+    overflow: scroll;
 }
+
 #json-editor .json-editor__json-editor-tree table{
     width: 100%;
     height: 100%;
@@ -26,14 +26,31 @@
 }
 .json-editor__line-num {
     color:#595e63;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 700;
     text-align: center;
+    background: #1E1E1E;
+    min-width: 10px;
+    width: 10px;
 }
 .json-editor__dropdown-arrow {
-    font-size: 12px;
+    font-size: 10px;
+    padding: 5px;
     cursor: pointer;
     text-align: center;
+    color:#595e63;
+    min-width: 10px;
+    max-width: 10px;
+    width: 10px;
+    transition: transform 0.2s ease-in-out;
+}
+.json-editor__dropdown-arrow:hover {
+    transition: transform 0.2s ease-in-out;
+    transform: scale(1.5);
+}
+.json-editor__depth {
+    min-width: 20px;
+    min-height: 20px;;
 }
 #json-editor .json-editor__json-editor-value tr {
     float: left;
@@ -41,6 +58,8 @@
 }
 .json-editor__field-key, .json-editor__field-value {
     outline: none;
+    background: none;
+    border: none;
 }
 
 .json-editor__separator {
@@ -48,11 +67,26 @@
     padding: 0 2px;
 }
 
+
+.json-editor__field-params-count {
+    color: #fff;
+    font-size: 14px;
+    padding: 0 2px;
+}
+.json-editor__field-params-count-separator {
+    color: #fff;
+    font-size: 14px;
+}
+
 #json-editor .json-editor__json-editor-tree *::selection {
     background: #264F78;
 }
 #json-editor .json-editor__json-editor-tree::-webkit-scrollbar {
     width: 6px;
+    height: 6px;
+}
+#json-editor .json-editor__json-editor-tree::-webkit-scrollbar-corner {
+    background-color: #1E1E1E
 }
 #json-editor .json-editor__json-editor-tree::-webkit-scrollbar-thumb {
     background-color: #393c41;
@@ -67,6 +101,13 @@ tr.json-editor-tree__row--type-string:hover {
 }
 tr.json-editor-tree__row--type-boolean:hover {
     background: #569cd683;
+}
+
+.json-editor__json-editor-tree div {
+    color:#9CDCFE;
+}
+.json-editor__json-editor-tree div.json-editor__field-key--array {
+    color: #535257;
 }
 
 div.json-editor__field-value.json-editor-tree__row--type-number {
