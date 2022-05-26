@@ -15,6 +15,9 @@
     background: #bcbcbe;
     color: #fff;
 }
+.contextMenu__list .contextMenu__option {
+    padding: 8px 30px;
+}
 .contextMenu .contextMenu__option:active {
     background: #87878a;
 }

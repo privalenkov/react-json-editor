@@ -33,9 +33,39 @@ function App() {
         "password2": ""
     }
     
+}, 
+{
+  "name": "a",
+  "email": null,
+  "password": 123,
+  "password2": true,
+  "errors": {
+      "name": "",
+      "email": [
+          "email", 
+          {
+              "message": "email",
+              "path": "email",
+              "type": "email",
+              "context": {
+                  "value": "email",
+                  "key": "email"
+              },
+              "name": "email",
+              "rule": "email",
+              "scope": "email",
+              "messages": ["email"],
+              "code": "EMAIL",
+              "isJoi": true
+          }
+      ],
+      "password": "",
+      "password2": ""
+  }
+  
 }]);
   const jsonEditorHandler = (jsonFile) => {
-
+    console.log(jsonFile)
   };
 
   useState(() => {

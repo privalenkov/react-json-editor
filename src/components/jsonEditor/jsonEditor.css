@@ -13,13 +13,11 @@
 }
 #json-editor .json-editor__json-editor-tree {
     width: 100%;
-    height: 100%;
     overflow: scroll;
 }
 
 #json-editor .json-editor__json-editor-tree table{
     width: 100%;
-    height: 100%;
     border-spacing: 0px;
     border-collapse: collapse;
 }
@@ -31,6 +29,9 @@
     background: #1E1E1E;
     min-width: 10px;
     width: 10px;
+}
+.json-editor__row {
+    height: 20px;
 }
 .json-editor__first-type-title-arrow {
     color:#595e63;
@@ -47,20 +48,30 @@
     font-weight: 700;
 }
 .json-editor__dropdown-arrow {
-    font-size: 10px;
-    padding: 5px;
-    cursor: pointer;
-    text-align: center;
-    color:#595e63;
+    padding: 0 10px;
     min-width: 10px;
     max-width: 10px;
     width: 10px;
     transition: transform 0.2s ease-in-out;
 }
-.json-editor__dropdown-arrow:hover {
-    transition: transform 0.2s ease-in-out;
-    transform: scale(1.5);
+.json-editor__dropdown-arrow button:disabled {
+    cursor: default;
 }
+.json-editor__dropdown-arrow button {
+    font-size: 10px;
+    color:#595e63;
+    width: 20px;
+    padding: 0;
+    height: 20px;
+    cursor: pointer;
+    background: none;
+    border:none;
+    transition: transform 0.2s ease-in-out;
+}
+.json-editor__dropdown-arrow--expanded button {
+    transform: rotate(-90deg);
+}
+
 .json-editor__depth {
     min-width: 20px;
     min-height: 20px;;
@@ -129,9 +140,18 @@ tr.json-editor-tree__row--type-boolean:hover {
 div.json-editor__field-value.json-editor-tree__row--type-number {
     color: #94cea8;
 }
+div.json-editor__field-value.json-editor-tree__row--type-number:hover {
+    background: #71997e;
+}
 div.json-editor__field-value.json-editor-tree__row--type-string {
     color: #ce9078;
 }
+div.json-editor__field-value.json-editor-tree__row--type-string:hover {
+    background: #5e4639;
+}
 div.json-editor__field-value.json-editor-tree__row--type-boolean {
     color: #569cd6;
+}
+div.json-editor__field-value.json-editor-tree__row--type-boolean:hover {
+    background: #416f95;
 }

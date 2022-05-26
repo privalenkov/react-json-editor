@@ -1,17 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './contextMenu.css';
 
-export default function ContextMenu({ elRef, options}) {
+export default function ContextMenu({ changeOptionHandler, elRef, options}) {
     const [visible, setVisible] = useState(false);
     const ref = useRef();
     const [el] = useState(elRef);
+    const [opts, setOpts] = useState(null);
+    let targetEl = null;
 
     const handleContextMenu = (e) => {
         e.preventDefault();
         if(!ref.current) return;
         setVisible(true);
-        
-        console.log(e.target)
+        targetEl = e.target.parentNode.parentNode;
         const clickX = e.clientX;
         const clickY = e.clientY;
         const screenW = window.innerWidth;
@@ -37,10 +38,43 @@ export default function ContextMenu({ elRef, options}) {
             ref.current.style.top = `${clickY - rootH - 5}px`;
         }
     };
+    const changeVisibility = (e) => {
+        const wasOutside = !ref.current.contains(e.target);
+        setOpts((op) => {
+            if (!wasOutside) {
+                const id = e.target.getAttribute('data-id');
+                return op.map((obj, i) => {
+                    if (i === Number(id)) obj.visible = !obj.visible;
+                    return obj;
+                })
+            }
+        })
+    }
+    const onMouseEnterHandler = (e) => {
+        changeVisibility(e);
+    }
+
+    const onMouseLeaveHandler = (e) => {
+        changeVisibility(e);
+    }
     const handleClick = (e) => {
+        // const parentAttr = targetEl.getAttribute('data-expandable-name');
+        // const value = e.target.innerText;
+        // changeOptionHandler(e, parentAttr, value);
         const wasOutside = !ref.current.contains(e.target);
         setVisible(visible => (visible && wasOutside) && false);
     }
+
+    useEffect(() => {
+        if (!options.length) return;
+        const newOpts = options.map((obj) => {
+            if (obj?.list?.length) {
+                obj.visible = false;
+            }
+            return obj;
+        })
+        setOpts(newOpts);       
+    }, [])
 
     
     const handleScroll = (e) =>  setVisible(visible => visible && false);
@@ -48,19 +82,26 @@ export default function ContextMenu({ elRef, options}) {
         const elCurrent = el.current;
         const viewport = elCurrent.querySelector('.json-editor__json-editor-tree');
         elCurrent.addEventListener('contextmenu', handleContextMenu);
-        elCurrent.addEventListener('click', handleClick);
+        document.addEventListener('click', handleClick);
         viewport.addEventListener('scroll', handleScroll);
         return () => {
             elCurrent.removeEventListener('contextmenu', handleContextMenu);
-            elCurrent.removeEventListener('click', handleClick);
+            document.removeEventListener('click', handleClick);
             viewport.removeEventListener('scroll', handleScroll);
         }
     }, [el]);
 
     return (
         <div ref={ref} className="contextMenu" style={{display: visible ? 'block' : 'none'}}>
-            {options &&
-                options.map((option, i) => <div key={i} className="contextMenu__option">{option.text}</div>)
+            {opts &&
+                opts.map((obj, i) => {
+                    return <div key={i}>
+                        <div onMouseEnter={onMouseEnterHandler} data-id={i} className='contextMenu__option'>{obj.text}</div>
+                        {(obj?.list?.length && obj.visible) && <div onMouseLeave={onMouseLeaveHandler} className='contextMenu__list'>
+                            {obj.list.map((obj,j) => <div key={j} className='contextMenu__option'>{obj.text}</div>)}
+                        </div>}
+                    </div>
+                })
             }
         </div>
     )
