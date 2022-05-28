@@ -77,7 +77,7 @@ function App() {
     <div className="App">
       <div className='container'>
     
-        <JsonEditor onSave={jsonEditorHandler} jsonFile={json} style={{'borderRadius': '35px'}}/>
+        <JsonEditor onChange={jsonEditorHandler} jsonData={json} style={{'borderRadius': '35px'}}/>
       </div>
     </div>
   );  
